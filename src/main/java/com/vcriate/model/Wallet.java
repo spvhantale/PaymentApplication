@@ -28,6 +28,12 @@ public class Wallet {
 	
 	@OneToMany(cascade = CascadeType.ALL)
 	private List<Transaction> transactions=new ArrayList<>();
+
+	public Wallet(Integer walletBalance) {
+		super();
+		this.walletBalance = walletBalance;
+	}
+	
 	
 	
 }

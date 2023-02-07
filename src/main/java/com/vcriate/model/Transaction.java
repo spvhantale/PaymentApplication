@@ -30,4 +30,14 @@ public class Transaction {
 	
 	@ManyToOne(cascade = CascadeType.ALL)
 	private Wallet wallet;
+
+	public Transaction(LocalDateTime date, Integer transactionAmount, boolean credit, boolean debit, Wallet wallet) {
+		super();
+		this.date = date;
+		this.transactionAmount = transactionAmount;
+		this.credit = credit;
+		this.debit = debit;
+		this.wallet = wallet;
+	}
+	
 }

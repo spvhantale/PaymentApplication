@@ -23,4 +23,12 @@ public class CurrentUserSession {
 	private String email;
 	private String key;
 	private LocalDateTime date;
+	
+	public CurrentUserSession(String email, String key, LocalDateTime date) {
+		super();
+		this.email = email;
+		this.key = key;
+		this.date = date;
+	}
+	
 }

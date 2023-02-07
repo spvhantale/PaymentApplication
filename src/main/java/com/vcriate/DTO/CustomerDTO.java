@@ -15,5 +15,4 @@ public class CustomerDTO {
 	private String password;
 	private String phoneNumber;
 	private AddressDTO address;
-	private Integer walletBalance;
 }

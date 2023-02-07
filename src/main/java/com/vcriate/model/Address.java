@@ -23,5 +23,13 @@ public class Address {
 	private String houseName;
 	private String streetName;
 	private String city;
+	public Address(String pincode, String houseName, String streetName, String city) {
+		super();
+		this.pincode = pincode;
+		this.houseName = houseName;
+		this.streetName = streetName;
+		this.city = city;
+	}
+	
 	
 }

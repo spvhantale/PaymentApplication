@@ -11,5 +11,5 @@ import com.vcriate.model.CurrentUserSession;
 public interface CurrentUserDAO extends JpaRepository<CurrentUserSession, Integer>{
 
 	public Optional<CurrentUserSession> findByEmail(String email);
-	
+	public Optional<CurrentUserSession> findByKey(String key);
 }
