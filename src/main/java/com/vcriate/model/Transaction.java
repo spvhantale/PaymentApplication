@@ -10,6 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,16 +30,14 @@ public class Transaction {
 	private boolean credit=false;
 	private boolean debit=false;
 	
-	@ManyToOne(cascade = CascadeType.ALL)
-	private Wallet wallet;
+	
 
-	public Transaction(LocalDateTime date, Integer transactionAmount, boolean credit, boolean debit, Wallet wallet) {
+	public Transaction(LocalDateTime date, Integer transactionAmount, boolean credit, boolean debit) {
 		super();
 		this.date = date;
 		this.transactionAmount = transactionAmount;
 		this.credit = credit;
 		this.debit = debit;
-		this.wallet = wallet;
 	}
 	
 }

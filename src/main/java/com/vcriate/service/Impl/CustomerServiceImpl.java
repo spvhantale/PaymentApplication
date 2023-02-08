@@ -17,7 +17,7 @@ import com.vcriate.Exception.CurrentUserSessionException;
 import com.vcriate.Exception.CustomerException;
 import com.vcriate.Exception.LoginException;
 import com.vcriate.model.Address;
-import com.vcriate.model.CurrentUserSession;
+import com.vcriate.model.UserSession;
 import com.vcriate.model.Customer;
 import com.vcriate.model.Wallet;
 import com.vcriate.service.CustomerService;
@@ -52,14 +52,14 @@ public class CustomerServiceImpl implements CustomerService{
 			Address addr=addressDao.save(address);
 			Customer custom=new Customer(customerDto.getEmail(), customerDto.getFirstName(), customerDto.getLastName(), customerDto.getPassword(), customerDto.getPhoneNumber(), addr, wall);
 			Customer c=customerDao.save(custom);
-			return "Register successfully"+c.getFirstName();
+			return "Register successfully "+c.getFirstName();
 		}
 	}
 
 	@Override
 	public String loginCustomer(LoginDTO loginDto) throws CustomerException,LoginException ,CurrentUserSessionException {
 		
-		Optional<CurrentUserSession> curr=currentUserDao.findByEmail(loginDto.getEmail());
+		Optional<UserSession> curr=currentUserDao.findByEmail(loginDto.getEmail());
 		if(curr.isPresent()) {
 			throw new CurrentUserSessionException("Already login");
 		}else {
@@ -68,9 +68,9 @@ public class CustomerServiceImpl implements CustomerService{
 				Customer cu=cust.get();
 				if(loginDto.getPassword().equals(cu.getPassword())) {
 					String key=RandomString.make(6);
-					CurrentUserSession current=new CurrentUserSession(loginDto.getEmail(), key, LocalDateTime.now());
-					CurrentUserSession cur=currentUserDao.save(current);
-					return "Key is "+cur.getKey();
+					UserSession current=new UserSession(loginDto.getEmail(), key,LocalDateTime.now());
+					UserSession cur=currentUserDao.save(current);
+					return "Key is "+cur.getUuid();
 				}else {
 					throw new LoginException("Password is wrong");
 				}
@@ -85,7 +85,7 @@ public class CustomerServiceImpl implements CustomerService{
 	@Override
 	public String logoutCustomer(String key) throws CurrentUserSessionException {
 	
-		Optional<CurrentUserSession> curr=currentUserDao.findByKey(key);
+		Optional<UserSession> curr=currentUserDao.findByUuid(key);
 		
 		if(curr.isPresent()) {
 			currentUserDao.delete(curr.get());

@@ -13,7 +13,7 @@ import com.vcriate.DAO.TransactionDAO;
 import com.vcriate.DAO.WalletDAO;
 import com.vcriate.Exception.CurrentUserSessionException;
 import com.vcriate.Exception.WalletException;
-import com.vcriate.model.CurrentUserSession;
+import com.vcriate.model.UserSession;
 import com.vcriate.model.Customer;
 import com.vcriate.model.Transaction;
 import com.vcriate.model.Wallet;
@@ -35,7 +35,7 @@ public class WalletServiceImpl implements WalletService{
 	@Override
 	public String creditAmount(Integer amount, String key) throws WalletException, CurrentUserSessionException {
 		
-		Optional<CurrentUserSession> curr=currentUserDao.findByKey(key);
+		Optional<UserSession> curr=currentUserDao.findByUuid(key);
 		
 		if(curr.isPresent()) {
 			Optional<Customer> cust=customerDao.findByEmail(curr.get().getEmail());
@@ -44,7 +44,7 @@ public class WalletServiceImpl implements WalletService{
 				Wallet wall=customer.getWallet();
 				wall.setWalletBalance(wall.getWalletBalance()+amount);
 				
-				Transaction transaction=new Transaction(LocalDateTime.now(), amount, true, false, wall);
+				Transaction transaction=new Transaction(LocalDateTime.now(), amount, true, false);
 				Transaction tr=tranDao.save(transaction);
 				wall.getTransactions().add(tr);
 				Wallet w=walletDao.save(wall);
@@ -59,22 +59,22 @@ public class WalletServiceImpl implements WalletService{
 
 	@Override
 	public String debitAmount(Integer amount, String key) throws WalletException, CurrentUserSessionException {
-		Optional<CurrentUserSession> curr=currentUserDao.findByKey(key);
+		Optional<UserSession> curr=currentUserDao.findByUuid(key);
 		
 		if(curr.isPresent()) {
 			Optional<Customer> cust=customerDao.findByEmail(curr.get().getEmail());
 			if(cust.isPresent()) {
 				Customer customer=cust.get();
 				Wallet wall=customer.getWallet();
-				if(wall.getWalletBalance()>amount) {
+				if(wall.getWalletBalance()>=amount) {
 					wall.setWalletBalance(wall.getWalletBalance()-amount);
-					Transaction transaction=new Transaction(LocalDateTime.now(), amount, false, true, wall);
+					Transaction transaction=new Transaction(LocalDateTime.now(), amount, false, true);
 					Transaction tr=tranDao.save(transaction);
 					wall.getTransactions().add(tr);
 					Wallet w=walletDao.save(wall);
 					return "Amount debited successfully "+amount+" total amount is "+w.getWalletBalance();
 				}else {
-					throw new WalletException("amount is not present"+amount);
+					throw new WalletException("amount is not present "+amount);
 				}
 			}else {
 				throw new CurrentUserSessionException("User is not present");
@@ -86,7 +86,7 @@ public class WalletServiceImpl implements WalletService{
 
 	@Override
 	public String checkAmount(String key) throws CurrentUserSessionException {
-		Optional<CurrentUserSession> curr=currentUserDao.findByKey(key);
+		Optional<UserSession> curr=currentUserDao.findByUuid(key);
 		
 		if(curr.isPresent()) {
 			Optional<Customer> cust=customerDao.findByEmail(curr.get().getEmail());
@@ -105,13 +105,16 @@ public class WalletServiceImpl implements WalletService{
 
 	@Override
 	public List<Transaction> checkTrasaction(String key) throws CurrentUserSessionException {
-		Optional<CurrentUserSession> curr=currentUserDao.findByKey(key);
+		Optional<UserSession> curr=currentUserDao.findByUuid(key);
 		if(curr.isPresent()) {
 			Optional<Customer> cust=customerDao.findByEmail(curr.get().getEmail());
 			if(cust.isPresent()) {
 				Customer customer=cust.get();
 				Wallet wall=customer.getWallet();
-				return wall.getTransactions();
+				
+				List<Transaction> tranList=wall.getTransactions();
+				System.out.println(tranList);
+				return tranList;
 			}else {
 				throw new CurrentUserSessionException("User not present");
 			}

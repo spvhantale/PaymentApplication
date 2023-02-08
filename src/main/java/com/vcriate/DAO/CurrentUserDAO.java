@@ -5,11 +5,11 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.vcriate.model.CurrentUserSession;
+import com.vcriate.model.UserSession;
 
 @Repository
-public interface CurrentUserDAO extends JpaRepository<CurrentUserSession, Integer>{
+public interface CurrentUserDAO extends JpaRepository<UserSession, Integer>{
 
-	public Optional<CurrentUserSession> findByEmail(String email);
-	public Optional<CurrentUserSession> findByKey(String key);
+	public Optional<UserSession> findByEmail(String email);
+	public Optional<UserSession> findByUuid(String uuid);
 }
